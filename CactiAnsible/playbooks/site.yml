@@ -1,0 +1,8 @@
+---
+- hosts: ubuntu_servers
+  become: yes
+  roles:
+    - apache
+    - mysql
+    - php
+    - cacti
