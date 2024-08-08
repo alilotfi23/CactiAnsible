@@ -1,0 +1,24 @@
+---
+- name: Install Apache
+  apt:
+    name: apache2
+    state: present
+
+- name: Start and enable Apache
+  systemd:
+    name: apache2
+    enabled: yes
+    state: started
+
+- name: Deploy Apache configuration
+  template:
+    src: apache.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+
+- name: Enable Apache mod_rewrite
+  command: a2enmod rewrite
+
+- name: Restart Apache
+  systemd:
+    name: apache2
+    state: restarted

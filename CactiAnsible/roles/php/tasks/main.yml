@@ -1,0 +1,23 @@
+---
+- name: Install PHP and extensions
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - php
+    - php-mysql
+    - php-gd
+    - libapache2-mod-php
+    - php-xml
+    - php-mbstring
+    - php-snmp
+
+- name: Deploy PHP configuration
+  template:
+    src: php.ini.j2
+    dest: /etc/php/7.4/apache2/php.ini
+
+- name: Restart Apache
+  systemd:
+    name: apache2
+    state: restarted

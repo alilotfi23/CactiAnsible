@@ -1,0 +1,36 @@
+---
+- name: Install MySQL
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - mysql-server
+    - mysql-client
+
+- name: Start and enable MySQL
+  systemd:
+    name: mysql
+    enabled: yes
+    state: started
+
+- name: Deploy MySQL configuration
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql/my.cnf
+
+- name: Restart MySQL
+  systemd:
+    name: mysql
+    state: restarted
+
+- name: Create Cacti database and user
+  mysql_db:
+    name: cacti
+    state: present
+
+- name: Create Cacti user
+  mysql_user:
+    name: cactiuser
+    password: cactiuserpassword
+    priv: 'cacti.*:ALL'
+    state: present

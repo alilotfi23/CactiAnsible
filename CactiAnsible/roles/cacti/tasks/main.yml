@@ -1,0 +1,33 @@
+---
+- name: Install Cacti
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - cacti
+    - snmp
+    - snmpd
+    - rrdtool
+
+- name: Import Cacti database
+  mysql_db:
+    name: cacti
+    state: import
+    target: /usr/share/doc/cacti/cacti.sql
+
+- name: Configure Cacti database settings
+  template:
+    src: cacti.sql.j2
+    dest: /usr/share/cacti/include/config.php
+
+- name: Set up Cacti cron job
+  cron:
+    name: "Cacti cron job"
+    minute: "*/5"
+    user: www-data
+    job: "/usr/bin/php /usr/share/cacti/poller.php > /dev/null 2>&1"
+
+- name: Restart Apache
+  systemd:
+    name: apache2
+    state: restarted
