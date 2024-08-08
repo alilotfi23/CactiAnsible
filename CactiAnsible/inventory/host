@@ -1,0 +1,2 @@
+[ubuntu_servers]
+your_server_ip ansible_user=your_user ansible_password=your_password
